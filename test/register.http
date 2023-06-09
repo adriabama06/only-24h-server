@@ -1,0 +1,5 @@
+POST /api/auth/register HTTP/1.1
+Host: 192.168.1.153:9008
+Content-Type: application/json; charset=utf-8
+
+{"username":"adriabama06","email":"adriabama06@gmail.com","password":"12345670"}

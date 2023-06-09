@@ -1,0 +1,5 @@
+POST /api/auth/login HTTP/1.1
+Host: 192.168.1.153:9008
+Content-Length: 55
+
+{"email":"adriabama06@gmail.com","password":"12345670"}
