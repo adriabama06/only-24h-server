@@ -1,22 +1,30 @@
 const { MEDIA_PATH, GetMediaAbsolutePath } = require("../media.js");
+const { randomString } = require('../global.js');
 
 const router = require('express').Router();
 const path = require('path');
 const fs = require("fs");
+const Joi = require('@hapi/joi');
 
 const Users = require('../models/User.js');
 const Media = require('../models/Media.js');
 
+const schemaPostNew = Joi.object({
+    filename: Joi.string().min(1).required(),
+    title: Joi.string().min(1).required(),
+    subtitle: Joi.string().min(1).required()
+});
+
 router.post("/new", async (req, res) => {
     const file_media = req.files.media;
+    if(!file_media) return res.status(400).json({ error: "El post tiene que ser de un solo archivo, tiene que llamarse \"media\"" });
+    
+    const { error } = schemaPostNew.validate(req.query);
+    if (error) return res.status(400).json({ error: error.details[0].message });
+
     const filename = req.query.filename;
     const title = req.query.title;
     const subtitle = req.query.subtitle;
-
-    if(!file_media) return res.status(400).json({ error: "El post tiene que ser de un solo archivo, tiene que llamarse media" });
-    if(!title) return res.status(400).json({ error: "Falta title en query" });
-    if(!subtitle) return res.status(400).json({ error: "Falta subtitle en query" });
-    if(!filename) return res.status(400).json({ error: "Falta filename en query" });
 
     const media = new Media({
         filename,
@@ -50,6 +58,14 @@ router.post("/new", async (req, res) => {
 router.delete("/:media_id", async (req, res) => {
     const media_id = req.params.media_id;
 
+    var isMedia;
+    try {
+        isMedia = await Media.findOne({ _id: media_id });
+    } catch {}
+    if(!isMedia) return res.status(400).json({ error: "Media no encontrada" });
+
+    if(isMedia.author != req.user._id) return res.status(400).json({ error: "No eres el autor del media" });
+
     try {
         const media = GetMediaAbsolutePath(media_id);
         if(!media) return res.status(400).json({ error: "Media no encontrada en los archivos" });
@@ -59,7 +75,10 @@ router.delete("/:media_id", async (req, res) => {
         return res.status(400).json({ error: "Error eliminando el archivo" });
     }
 
-    const media = await Media.findOneAndDelete({ _id: media_id });
+    var media;
+    try {
+        media = await Media.findOneAndDelete({ _id: media_id });
+    } catch {}
     if(!media) return res.status(400).json({ error: "Media no encontrada" });
 
     res.json({

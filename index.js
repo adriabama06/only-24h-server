@@ -7,10 +7,13 @@ const mongoose = require("mongoose");
 
 const APIauthRoutes = require("./api/auth.js");
 const APImediaRoutes = require("./api/media.js");
-const APIPrivateMediaRoutes = require("./api/privateMedia.js");
 const APIuserRoutes = require("./api/user.js");
 
 const verifyToken = require("./middleware/verifyToken.js");
+
+const APIPrivateMediaRoutes = require("./api/privateMedia.js");
+const APIPrivateCommentsRoutes = require("./api/privateComments.js");
+
 
 
 const uri = `mongodb://${process.env.MONGO_SERVER}/?retryWrites=true&w=majority`;
@@ -43,8 +46,10 @@ app.use(fileUpload({
 
 app.use("/api/auth", APIauthRoutes);
 app.use("/api/media", APImediaRoutes);
-app.use("/api/media", verifyToken, APIPrivateMediaRoutes);
 app.use("/api/user", APIuserRoutes);
+
+app.use("/api/media", verifyToken, APIPrivateMediaRoutes);
+app.use("/api/media", verifyToken, APIPrivateCommentsRoutes);
 
 app.get("/ping", async (req, res) => {
     res.send("pong");
