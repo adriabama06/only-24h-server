@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const PORT = process.env.PORT ?? 80;
+const PORT = process.env.PORT;
 
 
 const express = require("express");

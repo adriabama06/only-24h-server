@@ -53,10 +53,6 @@ router.post("/:media_id/comment", async (req, res) => {
     });
 });
 
-const schemaDeleteComment = Joi.object({
-    id: Joi.string().min(1).required(),
-});
-
 router.delete("/:media_id/comment/:comment_id", async (req, res) => {
     const media_id = req.params.media_id;
     const comment_id = req.params.comment_id;

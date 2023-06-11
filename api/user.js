@@ -21,9 +21,15 @@ router.get("/:user_id", async (req, res) => {
 
     if(!user) return res.status(400).json({ error: "Usuario no encontrado" });
 
+    var filter_data = {
+        username: user.username,
+        date: user.date,
+        id: user._id
+    };
+
     res.json({
         error: null,
-        data: user
+        data: filter_data
     });
 });
 
@@ -47,7 +53,7 @@ router.get("/:user_id/media", async (req, res) => {
         media = await Media.find({ author: user._id });
     } catch {}
 
-    if(!media || media.length == 0) return res.status(400).json({ error: "Media no encontrada" });
+    if(!media) return res.status(400).json({ error: "Media no encontrada" });
 
     res.json({
         error: null,
