@@ -6,15 +6,15 @@ const verifyToken = async (req, res, next) => {
     const token = req.header("auth-token");
     if (!token) return res.status(401).json({ error: "Se necesita token en el header 'auth-token'" });
 
-    const user_id = await RedisClient.get(`token:${token}`);
+    const userId = await RedisClient.get(`token:${token}`);
 
-    if(!user_id) return res.status(400).json({ error: "Token no es válido" });
+    if(!userId) return res.status(400).json({ error: "Token no es válido" });
 
     await RedisClient.expire(`token:${token}`, 24 * 60 * 60);
 
     var isUserExist = undefined;
     try {
-        isUserExist = await User.findOne({ _id: user_id });
+        isUserExist = await User.findOne({ _id: userId });
     } catch {
         return res.status(400).json({ error: "Token no es válido o expirado" });
     }

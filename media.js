@@ -3,21 +3,21 @@ const path = require("path");
 
 const MEDIA_PATH = process.env.MEDIA_PATH ?? "data";
 
-function GetMediaById(media_id) {
-    return fs.readdirSync(MEDIA_PATH).find(e => e.startsWith(media_id)) ?? null;
+function GetMediaById(mediaId) {
+    return fs.readdirSync(MEDIA_PATH).find(e => e.startsWith(mediaId)) ?? null;
 }
 
-function GetMediaPath(media_id) {
-    const media_f = GetMediaById(media_id);
-    if(!media_f) return null;
+function GetMediaPath(mediaId) {
+    const mediaFile = GetMediaById(mediaId);
+    if(!mediaFile) return null;
     
-    const media = path.join(MEDIA_PATH, media_f);
+    const media = path.join(MEDIA_PATH, mediaFile);
 
     return fs.existsSync(media) ? media : null;
 }
 
-function GetMediaAbsolutePath(media_id) {
-    const relative = GetMediaPath(media_id);
+function GetMediaAbsolutePath(mediaId) {
+    const relative = GetMediaPath(mediaId);
 
     if(!relative) return relative;
 
