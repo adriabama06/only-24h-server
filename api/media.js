@@ -6,11 +6,16 @@ const path = require('path');
 const Users = require('../models/User.js');
 const Media = require('../models/Media.js');
 
-router.get("/:media_id", async (req, res) => {
-    const media_id = req.params.media_id;
+router.get("/:mediaId", async (req, res) => {
+    const usersPerPage = 50;
 
-    if(media_id === "last") {
-        const media = await Media.find().sort({ "date": -1 }).limit(25);
+    const mediaId = req.params.mediaId;
+    const pageNumber = req.query.pageNumber ?? 1;
+
+    if(mediaId === "last") {
+        const skipCount = (pageNumber - 1) * usersPerPage;
+
+        const media = await Media.find().sort({ "date": -1 }).skip(skipCount).limit(usersPerPage);
     
         return res.json({
             error: null,
@@ -20,7 +25,7 @@ router.get("/:media_id", async (req, res) => {
 
     var media;
     try {
-        media = await Media.findOne({ _id: media_id });
+        media = await Media.findOne({ _id: mediaId });
     } catch {}
     if(!media) return res.status(400).json({ error: "Media no encontrada" });
 
@@ -30,16 +35,16 @@ router.get("/:media_id", async (req, res) => {
     });
 });
 
-router.get("/:media_id/view", async (req, res) => {
-    const media_id = req.params.media_id;
+router.get("/:mediaId/view", async (req, res) => {
+    const mediaId = req.params.mediaId;
 
     var isMediaExist;
     try {
-        isMediaExist = await Media.findOne({ _id: media_id });
+        isMediaExist = await Media.findOne({ _id: mediaId });
     } catch {}
     if(!isMediaExist) return res.status(400).json({ error: "Media no encontrada" });
 
-    const media = GetMediaAbsolutePath(media_id);
+    const media = GetMediaAbsolutePath(mediaId);
     if(!media) return res.status(400).json({ error: "Media no encontrada en los archivos" });
 
     res.sendFile(media);

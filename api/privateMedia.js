@@ -16,8 +16,8 @@ const schemaPostNew = Joi.object({
 });
 
 router.post("/new", async (req, res) => {
-    const file_media = req.files.media;
-    if(!file_media) return res.status(400).json({ error: "El post tiene que ser de un solo archivo, tiene que llamarse \"media\"" });
+    const fileMedia = req.files.media;
+    if(!fileMedia) return res.status(400).json({ error: "El post tiene que ser de un solo archivo, tiene que llamarse \"media\"" });
     
     const { error } = schemaPostNew.validate(req.query);
     if (error) return res.status(400).json({ error: error.details[0].message });
@@ -40,7 +40,7 @@ router.post("/new", async (req, res) => {
         return res.status(400).json({ error });
     }
 
-    file_media.mv(
+    fileMedia.mv(
         path.join(
             __dirname,
             "..",
@@ -55,19 +55,19 @@ router.post("/new", async (req, res) => {
     });
 });
 
-router.delete("/:media_id", async (req, res) => {
-    const media_id = req.params.media_id;
+router.delete("/:mediaId", async (req, res) => {
+    const mediaId = req.params.mediaId;
 
     var isMedia;
     try {
-        isMedia = await Media.findOne({ _id: media_id });
+        isMedia = await Media.findOne({ _id: mediaId });
     } catch {}
     if(!isMedia) return res.status(400).json({ error: "Media no encontrada" });
 
     if(isMedia.author != req.user._id) return res.status(400).json({ error: "No eres el autor del media" });
 
     try {
-        const media = GetMediaAbsolutePath(media_id);
+        const media = GetMediaAbsolutePath(mediaId);
         if(!media) return res.status(400).json({ error: "Media no encontrada en los archivos" });
 
         fs.unlinkSync(media);
@@ -77,7 +77,7 @@ router.delete("/:media_id", async (req, res) => {
 
     var media;
     try {
-        media = await Media.findOneAndDelete({ _id: media_id });
+        media = await Media.findOneAndDelete({ _id: mediaId });
     } catch {}
     if(!media) return res.status(400).json({ error: "Media no encontrada" });
 

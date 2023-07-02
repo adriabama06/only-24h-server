@@ -13,8 +13,8 @@ const schemaPostComment = Joi.object({
     content: Joi.string().min(1).required(),
 });
 
-router.post("/:media_id/comment", async (req, res) => {
-    const media_id = req.params.media_id;
+router.post("/:mediaId/comment", async (req, res) => {
+    const mediaId = req.params.mediaId;
 
     const { error } = schemaPostComment.validate(req.body);
     if (error) return res.status(400).json({ error: error.details[0].message });
@@ -23,7 +23,7 @@ router.post("/:media_id/comment", async (req, res) => {
 
     var media;
     try {
-        media = await Media.findOne({ _id: media_id });
+        media = await Media.findOne({ _id: mediaId });
     } catch {}
     if(!media) return res.status(400).json({ error: "Media no encontrada" });
 
@@ -53,17 +53,17 @@ router.post("/:media_id/comment", async (req, res) => {
     });
 });
 
-router.delete("/:media_id/comment/:comment_id", async (req, res) => {
-    const media_id = req.params.media_id;
-    const comment_id = req.params.comment_id;
+router.delete("/:mediaId/comment/:commentId", async (req, res) => {
+    const mediaId = req.params.mediaId;
+    const commentId = req.params.commentId;
 
     var media;
     try {
-        media = await Media.findOne({ _id: media_id });
+        media = await Media.findOne({ _id: mediaId });
     } catch {}
     if(!media) return res.status(400).json({ error: "Media no encontrada" });
 
-    media.comments = media.comments.filter(c => c.id != comment_id);
+    media.comments = media.comments.filter(c => c.id != commentId);
 
     var isMediaUpdated;
     try {
