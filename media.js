@@ -1,6 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 
+const Media = require('./models/Media.js');
+
 const MEDIA_PATH = process.env.MEDIA_PATH ?? "data";
 
 function GetMediaById(mediaId) {
@@ -24,9 +26,45 @@ function GetMediaAbsolutePath(mediaId) {
     return path.join(__dirname, relative);
 }
 
+function DeleteMedia(mediaId) {
+    const absolute = GetMediaAbsolutePath(mediaId);
+
+    if(!absolute) return absolute;
+
+    fs.unlinkSync(absolute);
+    return absolute;
+}
+
+function FilterMedia(media) {
+    const currentTime = Date.now();
+    var toDelete = [];
+
+    var newMedia = media.filter((m) => {
+        if(currentTime - m.createdAt >= m.deleteAfter) {
+            toDelete.push(m._id);
+            return false;
+        }
+        return true;
+    });
+
+    return [newMedia, toDelete];
+}
+
+async function ToDeleteMedia(toDelete) {
+    if(toDelete.length > 0) {
+        await Promise.all([
+            ...toDelete.map(m => DeleteMedia(m)),
+            Media.deleteMany({ _id: { $in: toDelete } })
+        ]);
+    }
+}
+
 module.exports = {
     GetMediaById,
     GetMediaPath,
     GetMediaAbsolutePath,
+    DeleteMedia,
+    FilterMedia,
+    ToDeleteMedia,
     MEDIA_PATH
 }

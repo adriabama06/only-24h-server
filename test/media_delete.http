@@ -1,4 +1,4 @@
-DELETE  /api/media/6483ad7803205fa02f53ccdb HTTP/1.1
+DELETE  /api/media/64c1b0919b45bd971f9951fc HTTP/1.1
 Host: 192.168.1.153:9008
-auth-token: cd0b1392d059c084b95b9172fa7e114e
+auth-token: 9f5950302a59d69a2f1cb0ed80b58926
 

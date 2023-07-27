@@ -3,7 +3,7 @@ const FormData = require('form-data');
 const fs = require("fs");
 
 const filename = "fotiko.png"
-const title = "Arduino";
+const title = "Arduino BB";
 const subtitle = "Projecto 4to Arduino, no se que mas";
 
 const formData = new FormData();
@@ -16,7 +16,7 @@ axios.postForm(
     {
         headers: {
             ...formData.getHeaders(),
-            "auth-token": "cd0b1392d059c084b95b9172fa7e114e"
+            "auth-token": "1b54bf1f92182e4e3646277083a39b96"
         }
     }
 )

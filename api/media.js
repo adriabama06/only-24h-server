@@ -1,4 +1,4 @@
-const { GetMediaAbsolutePath } = require("../media.js");
+const { GetMediaAbsolutePath, ToDeleteMedia } = require("../media.js");
 
 const router = require('express').Router();
 const path = require('path');
@@ -6,22 +6,10 @@ const path = require('path');
 const Users = require('../models/User.js');
 const Media = require('../models/Media.js');
 
-router.get("/:mediaId", async (req, res) => {
-    const usersPerPage = 50;
-
+router.get("/:mediaId", async (req, res, next) => {
     const mediaId = req.params.mediaId;
-    const pageNumber = req.query.pageNumber ?? 1;
 
-    if(mediaId === "last") {
-        const skipCount = (pageNumber - 1) * usersPerPage;
-
-        const media = await Media.find().sort({ "date": -1 }).skip(skipCount).limit(usersPerPage);
-    
-        return res.json({
-            error: null,
-            data: media
-        });
-    }
+    if(mediaId === "last") return next();
 
     var media;
     try {
@@ -29,7 +17,26 @@ router.get("/:mediaId", async (req, res) => {
     } catch {}
     if(!media) return res.status(400).json({ error: "Media no encontrada" });
 
+    if(Date.now() - media.createdAt >= media.deleteAfter) {
+        ToDeleteMedia([media._id]);
+        return res.status(400).json({ error: "Media no encontrada" });
+    }
+
     res.json({
+        error: null,
+        data: media
+    });
+});
+
+router.get("/last", async (req, res) => {
+    const usersPerPage = 50;
+    const pageNumber = req.query.pageNumber ?? 1;
+
+    const skipCount = (pageNumber - 1) * usersPerPage;
+
+    const media = await Media.find().sort({ "date": -1 }).skip(skipCount).limit(usersPerPage);
+
+    return res.json({
         error: null,
         data: media
     });

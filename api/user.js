@@ -1,4 +1,4 @@
-const { GetMediaAbsolutePath } = require("../media.js");
+const { GetMediaAbsolutePath, DeleteMedia, FilterMedia, ToDeleteMedia } = require("../media.js");
 
 const router = require('express').Router();
 const path = require('path');
@@ -6,18 +6,15 @@ const path = require('path');
 const Users = require('../models/User.js');
 const Media = require('../models/Media.js');
 
-router.get("/:userId", async (req, res) => {
+router.get("/:userId", async (req, res, next) => {
     const userId = req.params.userId;
+
+    if(req.query.u) return next();
 
     var user;
     try {
         user = await Users.findOne({ _id: userId });
     } catch {}
-    if(!user) {
-        try {
-            user = await Users.findOne({ username: userId });
-        } catch {}
-    }
 
     if(!user) return res.status(400).json({ error: "Usuario no encontrado" });
 
@@ -76,10 +73,14 @@ router.get("/:user_id/media", async (req, res) => {
 
     if(!media) return res.status(400).json({ error: "Media no encontrada" });
 
+    var [newMedia, toDelete] = FilterMedia(media);
+
     res.json({
         error: null,
-        data: media
+        data: newMedia
     });
+
+    ToDeleteMedia(toDelete);
 });
 
 module.exports = router;

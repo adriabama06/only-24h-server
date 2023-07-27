@@ -27,6 +27,11 @@ router.post("/:mediaId/comment", async (req, res) => {
     } catch {}
     if(!media) return res.status(400).json({ error: "Media no encontrada" });
 
+    if(Date.now() - media.createdAt >= media.deleteAfter) {
+        ToDeleteMedia([media._id]);
+        return res.status(400).json({ error: "Media no encontrada" });
+    }
+
     var comments = media.comments;
     var id = randomString();
     
@@ -62,6 +67,11 @@ router.delete("/:mediaId/comment/:commentId", async (req, res) => {
         media = await Media.findOne({ _id: mediaId });
     } catch {}
     if(!media) return res.status(400).json({ error: "Media no encontrada" });
+
+    if(Date.now() - media.createdAt >= media.deleteAfter) {
+        ToDeleteMedia([media._id]);
+        return res.status(400).json({ error: "Media no encontrada" });
+    }
 
     media.comments = media.comments.filter(c => c.id != commentId);
 
