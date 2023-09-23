@@ -15,13 +15,13 @@ const schemaRegister = Joi.object({
 router.post("/register", async (req, res) => {
     const { error } = schemaRegister.validate(req.body);
 
-    if (error) return res.status(400).json({ error: error.details[0].message });
+    if (error) return res.status(400).json({ error: true, data: error.details[0].message });
 
     const isEmailExist = await Users.findOne({ email: req.body.email });
-    if (isEmailExist) return res.status(400).json({ error: "Email ya registrado" });
+    if (isEmailExist) return res.status(400).json({ error: true, data: "Email ya registrado" });
 
     const isUsernameExist = await Users.findOne({ username: req.body.username });
-    if (isUsernameExist) return res.status(400).json({ error: "Nombre de usuario ya registrado" });
+    if (isUsernameExist) return res.status(400).json({ error: true, data: "Nombre de usuario ya registrado" });
 
     const salt = await bcrypt.genSalt(10);
     const password = await bcrypt.hash(req.body.password, salt);
@@ -36,11 +36,11 @@ router.post("/register", async (req, res) => {
         const savedUser = await user.save();
 
         res.json({
-            error: null,
+            error: false,
             data: savedUser
         });
     } catch (error) {
-        res.status(400).json({ error });
+        res.status(400).json({ error: true, data: error });
     }
 });
 

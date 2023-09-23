@@ -16,7 +16,7 @@ router.get("/:userId", async (req, res, next) => {
         user = await Users.findOne({ _id: userId });
     } catch {}
 
-    if(!user) return res.status(400).json({ error: "Usuario no encontrado" });
+    if(!user) return res.status(400).json({ error: true, data: "Usuario no encontrado" });
 
     var filter_data = {
         username: user.username,
@@ -25,7 +25,7 @@ router.get("/:userId", async (req, res, next) => {
     };
 
     res.json({
-        error: null,
+        error: false,
         data: filter_data
     });
 });
@@ -33,7 +33,7 @@ router.get("/:userId", async (req, res, next) => {
 router.get("/username", async (req, res) => {
     const username = req.query.u;
 
-    if(!username) return res.status(400).json({ error: "En la query falta username como \"u\"" });
+    if(!username) return res.status(400).json({ error: true, data: "En la query falta username como \"u\"" });
 
     var user;
     try {
@@ -41,7 +41,7 @@ router.get("/username", async (req, res) => {
     } catch {}
     
 
-    if(!user) return res.status(400).json({ error: "Usuario no encontrado" });
+    if(!user) return res.status(400).json({ error: true, data: "Usuario no encontrado" });
 
     
     var filter_data = {
@@ -51,7 +51,7 @@ router.get("/username", async (req, res) => {
     };
 
     res.json({
-        error: null,
+        error: false,
         data: filter_data
     });
 });
@@ -64,19 +64,19 @@ router.get("/:user_id/media", async (req, res) => {
         user = await Users.findOne({ _id: user_id });
     } catch {}
 
-    if(!user) return res.status(400).json({ error: "Usuario no encontrado" });
+    if(!user) return res.status(400).json({ error: true, data: "Usuario no encontrado" });
 
     var media;
     try {
         media = await Media.find({ author: user._id });
     } catch {}
 
-    if(!media) return res.status(400).json({ error: "Media no encontrada" });
+    if(!media) return res.status(400).json({ error: true, data: "Media no encontrada" });
 
     var [newMedia, toDelete] = FilterMedia(media);
 
     res.json({
-        error: null,
+        error: false,
         data: newMedia
     });
 

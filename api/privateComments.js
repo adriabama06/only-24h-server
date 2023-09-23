@@ -17,7 +17,7 @@ router.post("/:mediaId/comment", async (req, res) => {
     const mediaId = req.params.mediaId;
 
     const { error } = schemaPostComment.validate(req.body);
-    if (error) return res.status(400).json({ error: error.details[0].message });
+    if (error) return res.status(400).json({ error: true, data: error.details[0].message });
 
     const content = req.body.content;
 
@@ -25,11 +25,11 @@ router.post("/:mediaId/comment", async (req, res) => {
     try {
         media = await Media.findOne({ _id: mediaId });
     } catch {}
-    if(!media) return res.status(400).json({ error: "Media no encontrada" });
+    if(!media) return res.status(400).json({ error: true, data: "Media no encontrada" });
 
     if(Date.now() - media.createdAt >= media.deleteAfter) {
         ToDeleteMedia([media._id]);
-        return res.status(400).json({ error: "Media no encontrada" });
+        return res.status(400).json({ error: true, data: "Media no encontrada" });
     }
 
     var comments = media.comments;
@@ -50,10 +50,10 @@ router.post("/:mediaId/comment", async (req, res) => {
     try {
         isMediaUpdated = await Media.updateOne({ _id: media._id }, { comments });
     } catch {}
-    if(!isMediaUpdated) return res.status(400).json({ error: "Error al añadir el comentario" });
+    if(!isMediaUpdated) return res.status(400).json({ error: true, data: "Error al añadir el comentario" });
 
     res.json({
-        error: null,
+        error: false,
         data: media
     });
 });
@@ -66,11 +66,11 @@ router.delete("/:mediaId/comment/:commentId", async (req, res) => {
     try {
         media = await Media.findOne({ _id: mediaId });
     } catch {}
-    if(!media) return res.status(400).json({ error: "Media no encontrada" });
+    if(!media) return res.status(400).json({ error: true, data: "Media no encontrada" });
 
     if(Date.now() - media.createdAt >= media.deleteAfter) {
         ToDeleteMedia([media._id]);
-        return res.status(400).json({ error: "Media no encontrada" });
+        return res.status(400).json({ error: true, data: "Media no encontrada" });
     }
 
     media.comments = media.comments.filter(c => c.id != commentId);
@@ -79,10 +79,10 @@ router.delete("/:mediaId/comment/:commentId", async (req, res) => {
     try {
         isMediaUpdated = await Media.updateOne({ _id: media._id }, { comments: media.comments });
     } catch {}
-    if(!isMediaUpdated) return res.status(400).json({ error: "Error al borrar el comentario" });
+    if(!isMediaUpdated) return res.status(400).json({ error: true, data: "Error al borrar el comentario" });
 
     res.json({
-        error: null,
+        error: false,
         data: media
     });
 });

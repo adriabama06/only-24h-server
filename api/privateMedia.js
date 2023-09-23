@@ -17,10 +17,10 @@ const schemaPostNew = Joi.object({
 
 router.post("/new", async (req, res) => {
     const fileMedia = req.files.media;
-    if(!fileMedia) return res.status(400).json({ error: "El post tiene que ser de un solo archivo, tiene que llamarse \"media\"" });
+    if(!fileMedia) return res.status(400).json({ error: true, data: "El post tiene que ser de un solo archivo, tiene que llamarse \"media\"" });
     
     const { error } = schemaPostNew.validate(req.query);
-    if (error) return res.status(400).json({ error: error.details[0].message });
+    if (error) return res.status(400).json({ error: true, data: error.details[0].message });
 
     const filename = req.query.filename;
     const title = req.query.title;
@@ -37,7 +37,7 @@ router.post("/new", async (req, res) => {
     try {
         savedMedia = await media.save();
     } catch (error) {
-        return res.status(400).json({ error });
+        return res.status(400).json({ error: true, data: error });
     }
 
     fileMedia.mv(
@@ -50,7 +50,7 @@ router.post("/new", async (req, res) => {
     );
 
     res.json({
-        error: null,
+        error: false,
         data: savedMedia
     });
 });
@@ -62,27 +62,27 @@ router.delete("/:mediaId", async (req, res) => {
     try {
         isMedia = await Media.findOne({ _id: mediaId });
     } catch {}
-    if(!isMedia) return res.status(400).json({ error: "Media no encontrada" });
+    if(!isMedia) return res.status(400).json({ error: true, data: "Media no encontrada" });
 
-    if(isMedia.author != req.user._id) return res.status(400).json({ error: "No eres el autor del media" });
+    if(isMedia.author != req.user._id) return res.status(400).json({ error: true, data: "No eres el autor del media" });
 
     try {
         const media = GetMediaAbsolutePath(mediaId);
-        if(!media) return res.status(400).json({ error: "Media no encontrada en los archivos" });
+        if(!media) return res.status(400).json({ error: true, data: "Media no encontrada en los archivos" });
 
         fs.unlinkSync(media);
     } catch {
-        return res.status(400).json({ error: "Error eliminando el archivo" });
+        return res.status(400).json({ error: true, data: "Error eliminando el archivo" });
     }
 
     var media;
     try {
         media = await Media.findOneAndDelete({ _id: mediaId });
     } catch {}
-    if(!media) return res.status(400).json({ error: "Media no encontrada" });
+    if(!media) return res.status(400).json({ error: true, data: "Media no encontrada" });
 
     res.json({
-        error: null,
+        error: false,
         data: media
     });
 });

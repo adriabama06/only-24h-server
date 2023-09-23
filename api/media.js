@@ -15,15 +15,15 @@ router.get("/:mediaId", async (req, res, next) => {
     try {
         media = await Media.findOne({ _id: mediaId });
     } catch {}
-    if(!media) return res.status(400).json({ error: "Media no encontrada" });
+    if(!media) return res.status(400).json({ error: true, data: "Media no encontrada" });
 
     if(Date.now() - media.createdAt >= media.deleteAfter) {
         ToDeleteMedia([media._id]);
-        return res.status(400).json({ error: "Media no encontrada" });
+        return res.status(400).json({ error: true, data: "Media no encontrada" });
     }
 
     res.json({
-        error: null,
+        error: false,
         data: media
     });
 });
