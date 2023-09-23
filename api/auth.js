@@ -54,13 +54,13 @@ const schemaLogin = Joi.object({
 router.post("/login", async (req, res) => {
     const { error } = schemaLogin.validate(req.body);
 
-    if (error) return res.status(400).json({ error: error.details[0].message });
+    if (error) return res.status(400).json({ error: true, data: error.details[0].message });
 
     const user = await Users.findOne({ email: req.body.email });
-    if (!user) return res.status(400).json({ error: "Usuario no encontrado" });
+    if (!user) return res.status(400).json({ error: true, data: "Usuario no encontrado" });
 
     const validPassword = await bcrypt.compare(req.body.password, user.password);
-    if (!validPassword) return res.status(400).json({ error: "Contraseña no válida" });
+    if (!validPassword) return res.status(400).json({ error: true, data: "Contraseña no válida" });
     
     var token = randomString();
 
@@ -75,7 +75,7 @@ router.post("/login", async (req, res) => {
     
     res.header('auth-token', token)
     .json({
-        error: null,
+        error: false,
         data: {
             token
         }
