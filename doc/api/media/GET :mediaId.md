@@ -3,7 +3,7 @@
 **HTTP Method:** GET  
 ## Request:
 Empty
-## Response **200** / [400](/doc/api/error.md):
+## Response **200**:
 ```ts
 {
     error: false,

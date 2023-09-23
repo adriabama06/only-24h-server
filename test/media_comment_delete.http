@@ -1,4 +1,4 @@
-DELETE  /api/media/6483ad8f03205fa02f53cce2/comment/19e75c8232f4c424dc178dfe77643359 HTTP/1.1
+DELETE  /api/media/650f159f89e9a8c321b535f9/comment/8d15b96cf5a2c1381fb370f23d21c1bf HTTP/1.1
 Host: 192.168.1.153:9008
-auth-token: cd0b1392d059c084b95b9172fa7e114e
+auth-token: f374193e5ccfeba70155ea0525d7c8f8
 

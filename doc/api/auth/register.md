@@ -2,16 +2,21 @@
 **Full URL:** /api/auth/register  
 **HTTP Method:** POST  
 ## Request:
+### Headers:
 ```ts
 Content-Type: application/json; charset=utf-8
+```
 
+### Body:
+```ts
 {
     username: "username"
     email: "username@mail.com"
     password: "123456"
 }
 ```
-## Response **200** / [400](/doc/api/error.md):
+
+## Response **200**:
 ```ts
 {
     error: false,

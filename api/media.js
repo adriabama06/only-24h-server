@@ -45,7 +45,7 @@ router.get("/last", async (req, res) => {
     const media = await Media.find().sort({ "date": -1 }).skip(skipCount).limit(resultsPerPage);
 
     return res.json({
-        error: null,
+        error: false,
         data: media
     });
 });
@@ -57,10 +57,10 @@ router.get("/:mediaId/view", async (req, res) => {
     try {
         isMediaExist = await Media.findOne({ _id: mediaId });
     } catch {}
-    if(!isMediaExist) return res.status(400).json({ error: "Media no encontrada" });
+    if(!isMediaExist) return res.status(400).json({ error: true, data: "Media no encontrada" });
 
     const media = GetMediaAbsolutePath(mediaId);
-    if(!media) return res.status(400).json({ error: "Media no encontrada en los archivos" });
+    if(!media) return res.status(400).json({ error: true, data: "Media no encontrada en los archivos" });
 
     res.sendFile(media);
 });

@@ -37,7 +37,7 @@ router.get("/username", async (req, res) => {
 
     var user;
     try {
-        user = await Users.findOne({ username });
+        user = await Users.find({ username: { $regex: username, $options: "i" } });
     } catch {}
     
 

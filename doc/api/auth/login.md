@@ -2,15 +2,20 @@
 **Full URL:** /api/auth/login  
 **HTTP Method:** POST  
 ## Request:
+### Headers:
 ```ts
 Content-Type: application/json; charset=utf-8
+```
 
+### Body:
+```ts
 {
     email: "username@mail.com"
     password: "123456"
 }
 ```
-## Response:
+
+## Response **200**:
 ```ts
 {
     error: false,
