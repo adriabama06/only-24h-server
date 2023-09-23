@@ -2,6 +2,7 @@ const { GetMediaAbsolutePath, ToDeleteMedia } = require("../media.js");
 
 const router = require('express').Router();
 const path = require('path');
+const Joi = require('@hapi/joi');
 
 const Users = require('../models/User.js');
 const Media = require('../models/Media.js');
@@ -28,13 +29,20 @@ router.get("/:mediaId", async (req, res, next) => {
     });
 });
 
+const schemaLast = Joi.object({
+    pageNumber: Joi.number().optional()
+});
+
 router.get("/last", async (req, res) => {
-    const usersPerPage = 50;
-    const pageNumber = req.query.pageNumber ?? 1;
+    const { error } = schemaLast.validate(req.query);
+    if (error) return res.status(400).json({ error: true, data: error.details[0].message });
 
-    const skipCount = (pageNumber - 1) * usersPerPage;
+    const resultsPerPage = 50;
+    const pageNumber = parseInt(req.query.pageNumber) ?? 1;
 
-    const media = await Media.find().sort({ "date": -1 }).skip(skipCount).limit(usersPerPage);
+    const skipCount = (pageNumber - 1) * resultsPerPage;
+
+    const media = await Media.find().sort({ "date": -1 }).skip(skipCount).limit(resultsPerPage);
 
     return res.json({
         error: null,
@@ -55,6 +63,37 @@ router.get("/:mediaId/view", async (req, res) => {
     if(!media) return res.status(400).json({ error: "Media no encontrada en los archivos" });
 
     res.sendFile(media);
+});
+
+const schemaSearch = Joi.object({
+    q: Joi.string().min(1).max(256).required(),
+    pageNumber: Joi.number().optional(),
+    sort: Joi.number().optional()
+});
+
+router.get("/search", async (req, res) => {
+    const { error } = schemaSearch.validate(req.query);
+    if (error) return res.status(400).json({ error: true, data: error.details[0].message });
+
+    const resultsPerPage = 50;
+    const searchTerms = req.query.q;
+    const pageNumber = parseInt(req.query.pageNumber) ?? 1;
+    const sort = parseInt(req.query.sort) ?? -1;
+
+    const skipCount = (pageNumber - 1) * resultsPerPage;
+
+    const media = await Media.find({
+        $or: [
+            { title: { $regex: searchTerms, $options: "i" } },
+            { subtitle: { $regex: searchTerms, $options: "i" } },
+            { author: { $regex: searchTerms, $options: "i" } }
+        ]
+    }).sort({ "date": sort }).skip(skipCount).limit(resultsPerPage);
+
+    return res.json({
+        error: null,
+        data: media
+    });
 });
 
 module.exports = router;

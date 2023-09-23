@@ -10,9 +10,9 @@ const Users = require('../models/User.js');
 const Media = require('../models/Media.js');
 
 const schemaPostNew = Joi.object({
-    filename: Joi.string().min(1).required(),
-    title: Joi.string().min(1).required(),
-    subtitle: Joi.string().min(1).required()
+    filename: Joi.string().min(1).max(256).required(),
+    title: Joi.string().min(1).max(256).required(),
+    subtitle: Joi.string().min(1).max(1024).required()
 });
 
 router.post("/new", async (req, res) => {
