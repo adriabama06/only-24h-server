@@ -56,12 +56,12 @@ router.get("/username", async (req, res) => {
     });
 });
 
-router.get("/:user_id/media", async (req, res) => {
-    const user_id = req.params.user_id;
+router.get("/:userId/media", async (req, res) => {
+    const userId = req.params.userId;
 
     var user;
     try {
-        user = await Users.findOne({ _id: user_id });
+        user = await Users.findOne({ _id: userId });
     } catch {}
 
     if(!user) return res.status(400).json({ error: true, data: "Usuario no encontrado" });
