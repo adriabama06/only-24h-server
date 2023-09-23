@@ -1,7 +1,10 @@
 # only-24h-server
-Share over all internet any media before automatic deletion in 24h
+Backend of Only24h
 
-## How run it?
+# API Documentation
+[in doc/api/README.md](./doc/api/README.md)
+
+# How run it?
 Copy example.env to .env and set your values
 Run `npm i` to install all node modules
-And then run `npm start` to run the server ^.^
+And then run `npm start` to run the server ヾ(≧▽≦*)
