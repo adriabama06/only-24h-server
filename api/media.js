@@ -11,6 +11,7 @@ router.get("/:mediaId", async (req, res, next) => {
     const mediaId = req.params.mediaId;
 
     if(mediaId === "last") return next();
+    if(mediaId === "search") return next();
 
     var media;
     try {
@@ -84,6 +85,7 @@ router.get("/search", async (req, res) => {
 
     const media = await Media.find({
         $or: [
+            { filename: { $regex: searchTerms, $options: "i" } },
             { title: { $regex: searchTerms, $options: "i" } },
             { subtitle: { $regex: searchTerms, $options: "i" } },
             { author: { $regex: searchTerms, $options: "i" } }
@@ -91,7 +93,7 @@ router.get("/search", async (req, res) => {
     }).sort({ "date": sort }).skip(skipCount).limit(resultsPerPage);
 
     return res.json({
-        error: null,
+        error: false,
         data: media
     });
 });
