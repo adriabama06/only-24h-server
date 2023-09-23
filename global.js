@@ -13,7 +13,7 @@ RedisClient.on("connect", () => {
 RedisClient.connect();
 
 function randomString(len = 16) {
-    return crypto.randomBytes(16).toString("hex");
+    return crypto.randomBytes(len).toString("hex");
 }
 
 module.exports = {
