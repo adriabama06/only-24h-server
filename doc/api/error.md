@@ -1,6 +1,6 @@
 # On any error:
 
-## Response **400**:
+## Response **400**/**401**:
 ```ts
 {
     error: true,
