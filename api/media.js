@@ -17,11 +17,11 @@ router.get("/:mediaId", async (req, res, next) => {
     try {
         media = await Media.findOne({ _id: mediaId });
     } catch {}
-    if(!media) return res.status(400).json({ error: true, data: "Media no encontrada" });
+    if(!media) return res.status(400).json({ error: true, data: "Media not found" });
 
     if(Date.now() - media.createdAt >= media.deleteAfter) {
         ToDeleteMedia([media._id]);
-        return res.status(400).json({ error: true, data: "Media no encontrada" });
+        return res.status(400).json({ error: true, data: "Media not found" });
     }
 
     res.json({
@@ -58,10 +58,10 @@ router.get("/:mediaId/view", async (req, res) => {
     try {
         isMediaExist = await Media.findOne({ _id: mediaId });
     } catch {}
-    if(!isMediaExist) return res.status(400).json({ error: true, data: "Media no encontrada" });
+    if(!isMediaExist) return res.status(400).json({ error: true, data: "Media not found" });
 
     const media = GetMediaAbsolutePath(mediaId);
-    if(!media) return res.status(400).json({ error: true, data: "Media no encontrada en los archivos" });
+    if(!media) return res.status(400).json({ error: true, data: "Media not found in files" });
 
     res.sendFile(media);
 });

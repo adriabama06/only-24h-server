@@ -25,11 +25,11 @@ router.post("/:mediaId/comment", async (req, res) => {
     try {
         media = await Media.findOne({ _id: mediaId });
     } catch {}
-    if(!media) return res.status(400).json({ error: true, data: "Media no encontrada" });
+    if(!media) return res.status(400).json({ error: true, data: "Media not found" });
 
     if(Date.now() - media.createdAt >= media.deleteAfter) {
         ToDeleteMedia([media._id]);
-        return res.status(400).json({ error: true, data: "Media no encontrada" });
+        return res.status(400).json({ error: true, data: "Media not found" });
     }
 
     var comments = media.comments;
@@ -50,7 +50,7 @@ router.post("/:mediaId/comment", async (req, res) => {
     try {
         isMediaUpdated = await Media.updateOne({ _id: media._id }, { comments });
     } catch {}
-    if(!isMediaUpdated) return res.status(400).json({ error: true, data: "Error al añadir el comentario" });
+    if(!isMediaUpdated) return res.status(400).json({ error: true, data: "Error adding comment" });
 
     res.json({
         error: false,
@@ -66,11 +66,11 @@ router.delete("/:mediaId/comment/:commentId", async (req, res) => {
     try {
         media = await Media.findOne({ _id: mediaId });
     } catch {}
-    if(!media) return res.status(400).json({ error: true, data: "Media no encontrada" });
+    if(!media) return res.status(400).json({ error: true, data: "Media not found" });
 
     if(Date.now() - media.createdAt >= media.deleteAfter) {
         ToDeleteMedia([media._id]);
-        return res.status(400).json({ error: true, data: "Media no encontrada" });
+        return res.status(400).json({ error: true, data: "Media not found" });
     }
 
     media.comments = media.comments.filter(c => c.id != commentId);
@@ -79,7 +79,7 @@ router.delete("/:mediaId/comment/:commentId", async (req, res) => {
     try {
         isMediaUpdated = await Media.updateOne({ _id: media._id }, { comments: media.comments });
     } catch {}
-    if(!isMediaUpdated) return res.status(400).json({ error: true, data: "Error al borrar el comentario" });
+    if(!isMediaUpdated) return res.status(400).json({ error: true, data: "Error deleting comment" });
 
     res.json({
         error: false,

@@ -17,7 +17,7 @@ router.get("/:userId", async (req, res, next) => {
         user = await Users.findOne({ _id: userId });
     } catch {}
 
-    if(!user) return res.status(400).json({ error: true, data: "Usuario no encontrado" });
+    if(!user) return res.status(400).json({ error: true, data: "User not found" });
 
     var filter_data = {
         username: user.username,
@@ -47,7 +47,7 @@ router.get("/username", async (req, res) => {
     } catch {}
     
 
-    if(!user) return res.status(400).json({ error: true, data: "Usuario no encontrado" });
+    if(!user) return res.status(400).json({ error: true, data: "User not found" });
 
     
     var filter_data = {
@@ -106,14 +106,14 @@ router.get("/:userId/media", async (req, res) => {
         user = await Users.findOne({ _id: userId });
     } catch {}
 
-    if(!user) return res.status(400).json({ error: true, data: "Usuario no encontrado" });
+    if(!user) return res.status(400).json({ error: true, data: "User not found" });
 
     var media;
     try {
         media = await Media.find({ author: user._id });
     } catch {}
 
-    if(!media) return res.status(400).json({ error: true, data: "Media no encontrada" });
+    if(!media) return res.status(400).json({ error: true, data: "Media not found" });
 
     var [newMedia, toDelete] = FilterMedia(media);
 

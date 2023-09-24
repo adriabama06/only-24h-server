@@ -17,7 +17,7 @@ const schemaPostNew = Joi.object({
 
 router.post("/new", async (req, res) => {
     const fileMedia = req.files.media;
-    if(!fileMedia) return res.status(400).json({ error: true, data: "El post tiene que ser de un solo archivo, tiene que llamarse \"media\"" });
+    if(!fileMedia) return res.status(400).json({ error: true, data: "The post must be a single file, it must be called \"media\"" });
     
     const { error } = schemaPostNew.validate(req.query);
     if (error) return res.status(400).json({ error: true, data: error.details[0].message });
@@ -62,24 +62,24 @@ router.delete("/:mediaId", async (req, res) => {
     try {
         isMedia = await Media.findOne({ _id: mediaId });
     } catch {}
-    if(!isMedia) return res.status(400).json({ error: true, data: "Media no encontrada" });
+    if(!isMedia) return res.status(400).json({ error: true, data: "Media not found" });
 
-    if(isMedia.author != req.user._id) return res.status(400).json({ error: true, data: "No eres el autor del media" });
+    if(isMedia.author != req.user._id) return res.status(400).json({ error: true, data: "You are not the author of the media" });
 
     try {
         const media = GetMediaAbsolutePath(mediaId);
-        if(!media) return res.status(400).json({ error: true, data: "Media no encontrada en los archivos" });
+        if(!media) return res.status(400).json({ error: true, data: "Media not found in files" });
 
         fs.unlinkSync(media);
     } catch {
-        return res.status(400).json({ error: true, data: "Error eliminando el archivo" });
+        return res.status(400).json({ error: true, data: "Error deleting file" });
     }
 
     var media;
     try {
         media = await Media.findOneAndDelete({ _id: mediaId });
     } catch {}
-    if(!media) return res.status(400).json({ error: true, data: "Media no encontrada" });
+    if(!media) return res.status(400).json({ error: true, data: "Media not found" });
 
     res.json({
         error: false,
