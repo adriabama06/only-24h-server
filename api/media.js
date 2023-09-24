@@ -39,6 +39,33 @@ router.get("/:mediaId", async (req, res, next) => {
     });
 });
 
+router.get("/:mediaId/time", async (req, res, next) => {
+    const mediaId = req.params.mediaId;
+
+    var media;
+    try {
+        media = await Media.findOne({ _id: mediaId });
+    } catch {}
+    if(!media) return res.status(400).json({ error: true, data: "Media not found" });
+
+    const elapsedTime = Date.now() - media.createdAt;
+
+    if(elapsedTime >= media.deleteAfter) {
+        ToDeleteMedia([media._id]);
+        return res.status(400).json({ error: true, data: "Media not found" });
+    }
+
+    res.json({
+        error: false,
+        data: {
+            elapsedTime,
+            timeRemaining: media.deleteAfter - elapsedTime,
+            createdAt: media.createdAt,
+            deleteAfter: media.deleteAfter
+        }
+    });
+});
+
 const schemaLast = Joi.object({
     pageNumber: Joi.number().optional()
 });

@@ -3,6 +3,8 @@ require("dotenv").config();
 const PORT = process.env.PORT;
 
 
+const fs = require("fs");
+const path = require("path");
 const express = require("express");
 const fileUpload = require("express-fileupload");
 const mongoose = require("mongoose");
@@ -40,6 +42,11 @@ const app = express();
 app.disable("x-powered-by");
 
 app.use(express.json());
+
+for(const f of fs.readdirSync("tmp")) {
+    fs.unlinkSync(path.join("tmp", f));
+}
+
 app.use(fileUpload({
     limits: { fileSize: 50 * 1024 * 1024 },
     useTempFiles : true,
