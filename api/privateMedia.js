@@ -52,7 +52,7 @@ router.post("/new", async (req, res) => {
 
 router.get("/:mediaId/like", async (req, res) => {
     const mediaId = req.params.mediaId;
-    const userId = req.user._id;
+    const userId = req.user._id.toString();
 
     var media;
     try {
@@ -65,11 +65,11 @@ router.get("/:mediaId/like", async (req, res) => {
     media.likes.push(userId);
 
     try {
-        const savedMedia = await media.save();
+        await media.save();
 
         res.json({
             error: false,
-            data: savedMedia
+            data: media.likes
         });
     } catch (error) {
         res.status(400).json({ error: true, data: error });
@@ -78,7 +78,7 @@ router.get("/:mediaId/like", async (req, res) => {
 
 router.get("/:mediaId/unlike", async (req, res) => {
     const mediaId = req.params.mediaId;
-    const userId = req.user._id;
+    const userId = req.user._id.toString();
 
     var media;
     try {
@@ -88,14 +88,14 @@ router.get("/:mediaId/unlike", async (req, res) => {
 
     if(!media.likes.includes(userId)) return res.status(400).json({ error: true, data: "User has not liked this media" });
 
-    media.likes = media.likes.filter(likedUserId => likedUserId !== userId);
+    media.likes = media.likes.filter(id => id != userId);
 
     try {
-        const savedMedia = await media.save();
+        await media.save();
 
         res.json({
             error: false,
-            data: savedMedia
+            data: media.likes
         });
     } catch (error) {
         res.status(400).json({ error: true, data: error });
