@@ -6,11 +6,18 @@ const Joi = require('@hapi/joi');
 
 const Users = require('../models/User.js');
 const Media = require('../models/Media.js');
+const { RedisClient } = require("../global.js");
 
 router.get("/:userId", async (req, res, next) => {
     const userId = req.params.userId;
 
     if(req.query.u) return next();
+
+    const cached = await RedisClient.get(`req:/user/${userId}`);
+
+    if(cached) {
+        return res.contentType("application/json; charset=utf-8").send(cached);
+    }
 
     var user;
     try {
@@ -24,6 +31,8 @@ router.get("/:userId", async (req, res, next) => {
         date: user.date,
         id: user._id
     };
+
+    await RedisClient.set(`req:/user/${userId}`, JSON.stringify(filter_data), { EX: 2 * 60 });
 
     res.json({
         error: false,
@@ -41,6 +50,12 @@ router.get("/username", async (req, res) => {
 
     const username = req.query.u;
 
+    const cached = await RedisClient.get(`req:/user/username/${username}`);
+
+    if(cached) {
+        return res.contentType("application/json; charset=utf-8").send(cached);
+    }
+
     var user;
     try {
         user = await Users.findOne({ username: { $regex: username, $options: "i" } });
@@ -55,6 +70,8 @@ router.get("/username", async (req, res) => {
         date: user.date,
         id: user._id
     };
+
+    await RedisClient.set(`req:/user/username/${username}`, JSON.stringify(filter_data), { EX: 2 * 60 });
 
     res.json({
         error: false,
@@ -79,6 +96,12 @@ router.get("/search", async (req, res) => {
 
     const skipCount = (pageNumber - 1) * resultsPerPage;
 
+    const cached = await RedisClient.get(`req:/user/search/${username}/${pageNumber}/${sort}`);
+
+    if(cached) {
+        return res.contentType("application/json; charset=utf-8").send(cached);
+    }
+
     var users = await Users.find({
         username: { $regex: username, $options: "i" }
     }).sort({ "date": sort }).skip(skipCount).limit(resultsPerPage);
@@ -92,6 +115,8 @@ router.get("/search", async (req, res) => {
         }
     });
 
+    await RedisClient.set(`req:/user/search/${username}/${pageNumber}/${sort}`, JSON.stringify(filter_data), { EX: 2 * 60 });
+
     res.json({
         error: false,
         data: filter_data
@@ -100,6 +125,12 @@ router.get("/search", async (req, res) => {
 
 router.get("/:userId/media", async (req, res) => {
     const userId = req.params.userId;
+
+    const cached = await RedisClient.get(`req:/user/${userId}/media`);
+
+    if(cached) {
+        return res.contentType("application/json; charset=utf-8").send(cached);
+    }
 
     var user;
     try {
@@ -116,6 +147,8 @@ router.get("/:userId/media", async (req, res) => {
     if(!media) return res.status(400).json({ error: true, data: "Media not found" });
 
     var [newMedia, toDelete] = FilterMedia(media);
+
+    await RedisClient.set(`req:/user/${userId}/media`, JSON.stringify(newMedia), { EX: 2 * 60 });
 
     res.json({
         error: false,
