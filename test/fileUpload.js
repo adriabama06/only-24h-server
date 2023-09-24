@@ -16,7 +16,7 @@ axios.postForm(
     {
         headers: {
             ...formData.getHeaders(),
-            "auth-token": "d70348d35a2cd42a080794f05695bbec"
+            "auth-token": "fc862c3a73bc45b225117e2f8ce2880d"
         }
     }
 )

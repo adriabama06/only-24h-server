@@ -1,6 +1,6 @@
-POST /api/media/650f2599fba7d8242cf961ff/comment HTTP/1.1
+POST /api/media/65105f225b66a40aef813dc9/comment HTTP/1.1
 Host: 192.168.1.153:9008
-auth-token: f374193e5ccfeba70155ea0525d7c8f8
+auth-token: fc862c3a73bc45b225117e2f8ce2880d
 Content-Type: application/json; charset=utf-8
 
 {"content":"wow, your dog is very cute"}

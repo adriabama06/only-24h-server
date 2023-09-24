@@ -2,7 +2,7 @@ const { RedisClient, randomString } = require('../global.js');
 
 const router = require('express').Router();
 const bcrypt = require("bcrypt");
-const Joi = require('@hapi/joi');
+const Joi = require('joi');
 
 const Users = require('../models/User.js');
 

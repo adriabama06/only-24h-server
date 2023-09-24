@@ -2,7 +2,7 @@ const { GetMediaAbsolutePath, ToDeleteMedia } = require("../media.js");
 
 const router = require('express').Router();
 const fs = require('fs');
-const Joi = require('@hapi/joi');
+const Joi = require('joi');
 
 const Users = require('../models/User.js');
 const Media = require('../models/Media.js');
