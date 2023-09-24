@@ -7,6 +7,23 @@ Backend of Only24h
 # Recomendations:
 - Install & Use Docker
 
+# Download:
+## Git:
+```bash
+git clone https://github.com/adriabama06/only-24h-server.git
+cd only-24h-server
+```
+## Normal:
+Download Windows: https://github.com/adriabama06/only-24h-server/archive/refs/tags/v0.9.0.zip  
+Download Linux: https://github.com/adriabama06/only-24h-server/archive/refs/tags/v0.9.0.tar.gz  
+Descompress, open console or terminal, go to the folder and follow how run it  
+```bash
+wget "https://github.com/adriabama06/only-24h-server/archive/refs/tags/v0.9.0.tar.gz"
+tar -xf v0.9.0.tar.gz
+rm v0.9.0.tar.gz
+cd only-24h-server
+```
+
 # How run it? (Option 1)
 Everything actomatic only run, default port 9008, to change edit docker-compose.yml, where "- 9008:80", for example for use port 5000 set "- 5000:80":
 ```bash
