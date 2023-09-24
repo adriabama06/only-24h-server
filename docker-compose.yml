@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis:7.2.1
+    container_name: redis
+    networks:
+      - only24h
+
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    networks:
+      - only24h
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: only24h
+      MONGO_INITDB_ROOT_PASSWORD: 1234567a
+
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: only24h
+    ports:
+      - "9008:80"
+    networks:
+      - only24h
+    depends_on:
+      - redis
+      - mongodb
+
+networks:
+  only24h:
