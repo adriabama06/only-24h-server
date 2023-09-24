@@ -41,18 +41,65 @@ router.post("/new", async (req, res) => {
     }
 
     fileMedia.mv(
-        path.join(
-            __dirname,
-            "..",
-            MEDIA_PATH,
-            savedMedia._id + path.extname(filename)
-        )
+        path.join(__dirname, "..", MEDIA_PATH, savedMedia._id + path.extname(filename))
     );
 
     res.json({
         error: false,
         data: savedMedia
     });
+});
+
+router.get("/:mediaId/like", async (req, res) => {
+    const mediaId = req.params.mediaId;
+    const userId = req.user._id;
+
+    var media;
+    try {
+        media = await Media.findOne({ _id: mediaId });
+    } catch {}
+    if(!media) return res.status(400).json({ error: true, data: "Media not found" });
+
+    if(media.likes.includes(userId)) return res.status(400).json({ error: true, data: "User already liked this media" });
+
+    media.likes.push(userId);
+
+    try {
+        const savedMedia = await media.save();
+
+        res.json({
+            error: false,
+            data: savedMedia
+        });
+    } catch (error) {
+        res.status(400).json({ error: true, data: error });
+    }
+});
+
+router.get("/:mediaId/unlike", async (req, res) => {
+    const mediaId = req.params.mediaId;
+    const userId = req.user._id;
+
+    var media;
+    try {
+        media = await Media.findOne({ _id: mediaId });
+    } catch {}
+    if(!media) return res.status(400).json({ error: true, data: "Media not found" });
+
+    if(!media.likes.includes(userId)) return res.status(400).json({ error: true, data: "User has not liked this media" });
+
+    media.likes = media.likes.filter(likedUserId => likedUserId !== userId);
+
+    try {
+        const savedMedia = await media.save();
+
+        res.json({
+            error: false,
+            data: savedMedia
+        });
+    } catch (error) {
+        res.status(400).json({ error: true, data: error });
+    }
 });
 
 router.delete("/:mediaId", async (req, res) => {
