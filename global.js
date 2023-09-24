@@ -2,8 +2,7 @@ const redis = require("redis");
 const crypto = require("crypto");
 
 const RedisClient = redis.createClient({
-    host: process.env.REDIS_SERVER,
-    port: process.env.REDIS_SERVER_PORT
+    url: `redis://${process.env.REDIS_SERVER}:${process.env.REDIS_SERVER_PORT}`
 });
 
 RedisClient.on("connect", () => {
