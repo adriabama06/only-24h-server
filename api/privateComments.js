@@ -32,30 +32,29 @@ router.post("/:mediaId/comment", async (req, res) => {
         return res.status(400).json({ error: true, data: "Media not found" });
     }
 
-    var comments = media.comments;
     var id = randomString();
     
-    while(comments.find(c => c.id == id)) {
+    while(media.comments.find(c => c.id == id)) {
         id = randomString();
     }
 
-    comments.push({
+    media.comments.push({
         id,
         author: req.user._id,
         content,
         createdAt: new Date()
     });
 
-    var isMediaUpdated;
     try {
-        isMediaUpdated = await Media.updateOne({ _id: media._id }, { comments });
-    } catch {}
-    if(!isMediaUpdated) return res.status(400).json({ error: true, data: "Error adding comment" });
+        await media.save();
 
-    res.json({
-        error: false,
-        data: media
-    });
+        res.json({
+            error: false,
+            data: media.comments
+        });
+    } catch (error) {
+        res.status(400).json({ error: true, data: error });
+    }
 });
 
 router.delete("/:mediaId/comment/:commentId", async (req, res) => {
@@ -75,16 +74,16 @@ router.delete("/:mediaId/comment/:commentId", async (req, res) => {
 
     media.comments = media.comments.filter(c => c.id != commentId);
 
-    var isMediaUpdated;
     try {
-        isMediaUpdated = await Media.updateOne({ _id: media._id }, { comments: media.comments });
-    } catch {}
-    if(!isMediaUpdated) return res.status(400).json({ error: true, data: "Error deleting comment" });
+        await media.save();
 
-    res.json({
-        error: false,
-        data: media
-    });
+        res.json({
+            error: false,
+            data: media.comments
+        });
+    } catch (error) {
+        res.status(400).json({ error: true, data: error });
+    }
 });
 
 module.exports = router;
