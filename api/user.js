@@ -32,7 +32,7 @@ router.get("/:userId", async (req, res, next) => {
         id: user._id
     };
 
-    await RedisClient.set(`req:/user/${userId}`, JSON.stringify(filter_data), { EX: 2 * 60 });
+    await RedisClient.set(`req:/user/${userId}`, JSON.stringify({ error: false, data: filter_data }), { EX: 2 * 60 });
 
     res.json({
         error: false,
@@ -71,7 +71,7 @@ router.get("/username", async (req, res) => {
         id: user._id
     };
 
-    await RedisClient.set(`req:/user/username/${username}`, JSON.stringify(filter_data), { EX: 2 * 60 });
+    await RedisClient.set(`req:/user/username/${username}`, JSON.stringify({ error: false, data: filter_data }), { EX: 2 * 60 });
 
     res.json({
         error: false,
@@ -115,7 +115,7 @@ router.get("/search", async (req, res) => {
         }
     });
 
-    await RedisClient.set(`req:/user/search/${username}/${pageNumber}/${sort}`, JSON.stringify(filter_data), { EX: 2 * 60 });
+    await RedisClient.set(`req:/user/search/${username}/${pageNumber}/${sort}`, JSON.stringify({ error: false, data: filter_data }), { EX: 2 * 60 });
 
     res.json({
         error: false,
@@ -148,7 +148,7 @@ router.get("/:userId/media", async (req, res) => {
 
     var [newMedia, toDelete] = FilterMedia(media);
 
-    await RedisClient.set(`req:/user/${userId}/media`, JSON.stringify(newMedia), { EX: 2 * 60 });
+    await RedisClient.set(`req:/user/${userId}/media`, JSON.stringify({ error: false, data: newMedia }), { EX: 2 * 60 });
 
     res.json({
         error: false,
