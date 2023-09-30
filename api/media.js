@@ -31,7 +31,7 @@ router.get("/:mediaId", async (req, res, next) => {
         return res.status(400).json({ error: true, data: "Media not found" });
     }
 
-    await RedisClient.set(`req:/media/${mediaId}`, JSON.stringify({ error: false, data: media }), { EX: 2 * 60 });
+    await RedisClient.set(`req:/media/${mediaId}`, JSON.stringify({ error: false, data: media }), { EX: 2 * 60, NX: true });
 
     res.json({
         error: false,
@@ -87,7 +87,7 @@ router.get("/last", async (req, res) => {
 
     const media = await Media.find().sort({ "date": -1 }).skip(skipCount).limit(resultsPerPage);
 
-    await RedisClient.set(`req:/media/last/${pageNumber}`, JSON.stringify({ error: false, data: media }), { EX: 5 });
+    await RedisClient.set(`req:/media/last/${pageNumber}`, JSON.stringify({ error: false, data: media }), { EX: 5, NX: true });
 
     return res.json({
         error: false,
@@ -115,7 +115,7 @@ router.get("/:mediaId/view", async (req, res) => {
     const media = GetMediaAbsolutePath(mediaId);
     if(!media) return res.status(400).json({ error: true, data: "Media not found in files" });
 
-    await RedisClient.set(`req:/media/${mediaId}/view`, media, { EX: 5 });
+    await RedisClient.set(`req:/media/${mediaId}/view`, media, { EX: 5, NX: true });
 
     res.sendFile(media);
 });
@@ -152,7 +152,7 @@ router.get("/search", async (req, res) => {
         ]
     }).sort({ "date": sort }).skip(skipCount).limit(resultsPerPage);
 
-    await RedisClient.set(`req:/media/search/${searchTerms}/${pageNumber}/${sort}`, JSON.stringify({ error: false, data: media }), { EX: 2 * 60 });
+    await RedisClient.set(`req:/media/search/${searchTerms}/${pageNumber}/${sort}`, JSON.stringify({ error: false, data: media }), { EX: 2 * 60, NX: true });
 
     return res.json({
         error: false,

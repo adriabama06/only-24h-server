@@ -69,7 +69,7 @@ router.post("/login", async (req, res) => {
     }
 
     await RedisClient.set(`token:${token}`, user._id.toString(), {
-        EX: 24 * 60 * 60
+        EX: 24 * 60 * 60, NX: true
     });
     // await RedisClient.expire(`token:${token}`, 24 * 60 * 60);
     
