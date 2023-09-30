@@ -31,8 +31,8 @@ formData.append("media", mediaFile);
         author: "650f135089e9a8c321b535f4",
         likes: [],
         comments: [],
-        deleteAfter: 86400000,
-        createdAt: "2023-09-23T16:43:11.214Z",
+        createdAt: '2023-09-30T18:44:18.634Z',
+        expirationDate: '2023-10-01T18:44:18.634Z',
         updatedAt: "2023-09-23T16:43:11.214Z",
         id: "650f159f89e9a8c321b535f9"
     }

@@ -8,10 +8,10 @@ Empty
 {
     error: false,
     data: {
-        elapsedTime: 61642798,
-        timeRemaining: 24757202,
-        createdAt: "2023-09-23T17:51:21.417Z",
-        deleteAfter: 86400000
+        elapsedTime: 175064,
+        timeRemaining: 86224936,
+        createdAt: "2023-09-30T18:44:18.634Z",
+        expirationDate: "2023-10-01T18:44:18.634Z"
     }
 }
 ```

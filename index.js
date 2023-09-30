@@ -36,7 +36,7 @@ mongoose.connect(uri, {
     console.log("Conectado a MongoDB");
 
     setInterval(async () => {
-        const expiratedMediasIds = await Media.find({ expirationDate: { $lte: new Date() } }).map(m => m._id);
+        const expiratedMediasIds = (await Media.find({ expirationDate: { $lte: new Date() } })).map(m => m._id);
 
         if(expiratedMediasIds.length > 0) {
             ToDeleteMedia(expiratedMediasIds);
