@@ -10,6 +10,4 @@ export function FilterMedia(media: any[]): [any[], any[]];
 
 export async function ToDeleteMedia(toDelete: any[]): void;
 
-export function CheckTime(media: any, time?: number): boolean;
-
 export const MEDIA_PATH: string;

@@ -1,4 +1,3 @@
-const { MEDIA_PATH, GetMediaAbsolutePath, CheckTime } = require("../media.js");
 const { randomString } = require('../global.js');
 
 const router = require('express').Router();
@@ -26,11 +25,6 @@ router.post("/:mediaId/comment", async (req, res) => {
         media = await Media.findOne({ _id: mediaId });
     } catch {}
     if(!media) return res.status(400).json({ error: true, data: "Media not found" });
-
-    if(CheckTime(media)) {
-        ToDeleteMedia([media._id]);
-        return res.status(400).json({ error: true, data: "Media not found" });
-    }
 
     var id = randomString();
     
@@ -66,11 +60,6 @@ router.delete("/:mediaId/comment/:commentId", async (req, res) => {
         media = await Media.findOne({ _id: mediaId });
     } catch {}
     if(!media) return res.status(400).json({ error: true, data: "Media not found" });
-
-    if(Date.now() - media.createdAt >= media.deleteAfter) {
-        ToDeleteMedia([media._id]);
-        return res.status(400).json({ error: true, data: "Media not found" });
-    }
 
     media.comments = media.comments.filter(c => c.id != commentId);
 

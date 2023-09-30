@@ -1,4 +1,4 @@
-const { GetMediaAbsolutePath, ToDeleteMedia, CheckTime } = require("../media.js");
+const { GetMediaAbsolutePath } = require("../media.js");
 
 const router = require('express').Router();
 const fs = require('fs');
@@ -26,11 +26,6 @@ router.get("/:mediaId", async (req, res, next) => {
     } catch {}
     if(!media) return res.status(400).json({ error: true, data: "Media not found" });
 
-    if(CheckTime(media)) {
-        ToDeleteMedia([media._id]);
-        return res.status(400).json({ error: true, data: "Media not found" });
-    }
-
     await RedisClient.set(`req:/media/${mediaId}`, JSON.stringify({ error: false, data: media }), { EX: 2 * 60, NX: true });
 
     res.json({
@@ -48,18 +43,18 @@ router.get("/:mediaId/time", async (req, res, next) => {
     } catch {}
     if(!media) return res.status(400).json({ error: true, data: "Media not found" });
 
-    if(CheckTime(media)) {
-        ToDeleteMedia([media._id]);
-        return res.status(400).json({ error: true, data: "Media not found" });
-    }
+    const now = new Date();
+
+    const elapsedTime = now - media.createdAt;
+    const timeRemaining = media.expirationDate - now;
 
     res.json({
         error: false,
         data: {
             elapsedTime,
-            timeRemaining: media.deleteAfter - elapsedTime,
+            timeRemaining,
             createdAt: media.createdAt,
-            deleteAfter: media.deleteAfter
+            expirationDate: media.expirationDate
         }
     });
 });
