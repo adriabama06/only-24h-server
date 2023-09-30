@@ -35,21 +35,6 @@ function DeleteMedia(mediaId) {
     return absolute;
 }
 
-function FilterMedia(media) {
-    const currentTime = Date.now();
-    var toDelete = [];
-
-    var newMedia = media.filter((m) => {
-        if(currentTime - m.createdAt >= m.deleteAfter) {
-            toDelete.push(m._id);
-            return false;
-        }
-        return true;
-    });
-
-    return [newMedia, toDelete];
-}
-
 async function ToDeleteMedia(toDelete) {
     if(toDelete.length > 0) {
         await Promise.all([
@@ -64,7 +49,6 @@ module.exports = {
     GetMediaPath,
     GetMediaAbsolutePath,
     DeleteMedia,
-    FilterMedia,
     ToDeleteMedia,
     MEDIA_PATH
 }
