@@ -17,6 +17,8 @@ const verifyToken = require("./middleware/verifyToken.js");
 
 const APIPrivateMediaRoutes = require("./api/privateMedia.js");
 const APIPrivateCommentsRoutes = require("./api/privateComments.js");
+const Media = require("./models/Media.js");
+const { ToDeleteMedia } = require("./media.js");
 
 
 
@@ -30,7 +32,17 @@ mongoose.connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
-.then(()=> console.log("Conectado a MongoDB"))
+.then(() => {
+    console.log("Conectado a MongoDB");
+
+    setInterval(async () => {
+        const expiratedMediasIds = await Media.find({ expirationDate: { $lte: new Date() } }).map(m => m._id);
+
+        if(expiratedMediasIds.length > 0) {
+            ToDeleteMedia(expiratedMediasIds);
+        }
+    }, 10 * 1000);
+})
 .catch((err) => {
     console.log(err);
     console.log("Error al conectar a mongodb");
