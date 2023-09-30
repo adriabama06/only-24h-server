@@ -146,16 +146,12 @@ router.get("/:userId/media", async (req, res) => {
 
     if(!media) return res.status(400).json({ error: true, data: "Media not found" });
 
-    var [newMedia, toDelete] = FilterMedia(media);
-
-    await RedisClient.set(`req:/user/${userId}/media`, JSON.stringify({ error: false, data: newMedia }), { EX: 2 * 60, NX: true });
+    await RedisClient.set(`req:/user/${userId}/media`, JSON.stringify({ error: false, data: media }), { EX: 2 * 60, NX: true });
 
     res.json({
         error: false,
-        data: newMedia
+        data: media
     });
-
-    ToDeleteMedia(toDelete);
 });
 
 module.exports = router;
