@@ -1,6 +1,6 @@
 {
   "name": "only-24h-server",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Share over all internet any media before automatic deletion in 24h",
   "main": "index.js",
   "scripts": {

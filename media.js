@@ -59,6 +59,10 @@ async function ToDeleteMedia(toDelete) {
     }
 }
 
+function CheckTime(media, time = Date.now()) {
+    return (time - media.createdAt) > media.deleteAfter
+}
+
 module.exports = {
     GetMediaById,
     GetMediaPath,
@@ -66,5 +70,6 @@ module.exports = {
     DeleteMedia,
     FilterMedia,
     ToDeleteMedia,
+    CheckTime,
     MEDIA_PATH
 }

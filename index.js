@@ -67,5 +67,5 @@ app.get("/ping", async (req, res) => {
 
 
 app.listen(PORT, () => {
-    console.log(`Ready at: ${PORT}`);
+    console.log(`Ready at: ${PORT} version: v${require("./package.json").version}`);
 });

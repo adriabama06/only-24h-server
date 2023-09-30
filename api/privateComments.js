@@ -1,4 +1,4 @@
-const { MEDIA_PATH, GetMediaAbsolutePath } = require("../media.js");
+const { MEDIA_PATH, GetMediaAbsolutePath, CheckTime } = require("../media.js");
 const { randomString } = require('../global.js');
 
 const router = require('express').Router();
@@ -27,7 +27,7 @@ router.post("/:mediaId/comment", async (req, res) => {
     } catch {}
     if(!media) return res.status(400).json({ error: true, data: "Media not found" });
 
-    if(Date.now() - media.createdAt >= media.deleteAfter) {
+    if(CheckTime(media)) {
         ToDeleteMedia([media._id]);
         return res.status(400).json({ error: true, data: "Media not found" });
     }

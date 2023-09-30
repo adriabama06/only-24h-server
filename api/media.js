@@ -1,4 +1,4 @@
-const { GetMediaAbsolutePath, ToDeleteMedia } = require("../media.js");
+const { GetMediaAbsolutePath, ToDeleteMedia, CheckTime } = require("../media.js");
 
 const router = require('express').Router();
 const fs = require('fs');
@@ -26,7 +26,7 @@ router.get("/:mediaId", async (req, res, next) => {
     } catch {}
     if(!media) return res.status(400).json({ error: true, data: "Media not found" });
 
-    if(Date.now() - media.createdAt >= media.deleteAfter) {
+    if(CheckTime(media)) {
         ToDeleteMedia([media._id]);
         return res.status(400).json({ error: true, data: "Media not found" });
     }
@@ -48,9 +48,7 @@ router.get("/:mediaId/time", async (req, res, next) => {
     } catch {}
     if(!media) return res.status(400).json({ error: true, data: "Media not found" });
 
-    const elapsedTime = Date.now() - media.createdAt;
-
-    if(elapsedTime >= media.deleteAfter) {
+    if(CheckTime(media)) {
         ToDeleteMedia([media._id]);
         return res.status(400).json({ error: true, data: "Media not found" });
     }
@@ -85,13 +83,13 @@ router.get("/last", async (req, res) => {
         return res.contentType("application/json; charset=utf-8").send(cached);
     }
 
-    const media = await Media.find().sort({ "date": -1 }).skip(skipCount).limit(resultsPerPage);
+    const medias = await Media.find().sort({ "date": -1 }).skip(skipCount).limit(resultsPerPage);
 
-    await RedisClient.set(`req:/media/last/${pageNumber}`, JSON.stringify({ error: false, data: media }), { EX: 5, NX: true });
+    await RedisClient.set(`req:/media/last/${pageNumber}`, JSON.stringify({ error: false, data: medias }), { EX: 5, NX: true });
 
     return res.json({
         error: false,
-        data: media
+        data: medias
     });
 });
 
