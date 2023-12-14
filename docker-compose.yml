@@ -5,6 +5,8 @@ services:
     image: redis:7.2.1
     container_name: redis
     restart: always
+    ports:
+      - "6379:6379"
     networks:
       - only24h
 
@@ -12,6 +14,8 @@ services:
     image: mongo:6.0
     container_name: mongodb
     restart: always
+#    ports:
+#      - "27017:27017"
     networks:
       - only24h
     environment:
@@ -22,10 +26,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: only24h
+    container_name: node
     restart: always
-    ports:
-      - "9008:80"
+#    ports:
+#      - "9008:80"
     networks:
       - only24h
     depends_on:
