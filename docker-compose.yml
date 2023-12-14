@@ -5,8 +5,8 @@ services:
     image: redis:7.2.1
     container_name: redis
     restart: always
-    ports:
-      - "6379:6379"
+#    ports:
+#      - "6379:6379"
     networks:
       - only24h
 
@@ -28,8 +28,8 @@ services:
       dockerfile: Dockerfile
     container_name: node
     restart: always
-#    ports:
-#      - "9008:80"
+    ports:
+      - "9008:80"
     networks:
       - only24h
     depends_on:
